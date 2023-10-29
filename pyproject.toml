@@ -24,7 +24,12 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = []
+dependencies = [
+  "beautifulsoup4",
+  "dbus-python",
+  "requests",
+  "schedule",
+]
 
 [project.urls]
 Documentation = "https://github.com/unknown/tvnotipy#readme"
