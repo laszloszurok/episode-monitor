@@ -9,7 +9,8 @@ if ! [ -f pyrightconfig.json ]; then
     echo "generating pyrightconfig.json"
     venv_path="$(hatch env find)"
     venv_name="$(basename "$venv_path")"
-    echo "{ \"venvPath\": \"$venv_path\", \"venv\": \"$venv_name\"}" > pyrightconfig.json
+    echo "{ \"venvPath\": \"$venv_path\", \"venv\": \"$venv_name\", \"executionEnvironments\": [{\"root\": \"src/$venv_name\"}]}" \
+        > pyrightconfig.json
 else
     echo "pyrightconfig.json exists already"
 fi
