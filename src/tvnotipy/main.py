@@ -16,6 +16,11 @@ wiki_pages = [
     "https://en.wikipedia.org/wiki/Stranger_Things",
 ]
 
+cache_dir = (
+    f"{xdg_cache}/tvnotipy"
+    if (xdg_cache := os.getenv("XDG_CACHE_HOME")) and os.path.isabs(xdg_cache)
+    else Path.home().joinpath(".cache", "tvnotipy")
+)
 
 def job():
     for url in wiki_pages:
@@ -26,11 +31,6 @@ def job():
 
         for tr in table_rows:
             if tr.text.startswith("No. of seasons"):
-                cache_dir = (
-                    f"{xdg_cache}/tvnotipy"
-                    if (xdg_cache := os.getenv("XDG_CACHE_HOME")) and os.path.isabs(xdg_cache)
-                    else Path.home().joinpath(".cache", "tvnotipy")
-                )
                 title = url.split("/")[-1]
                 cache_file = os.path.join(cache_dir, title)
 
@@ -55,11 +55,6 @@ while True:
     schedule.run_pending()
 
     for url in wiki_pages:
-        cache_dir = (
-            f"{xdg_cache}/tvnotipy"
-            if (xdg_cache := os.getenv("XDG_CACHE_HOME")) and os.path.isabs(xdg_cache)
-            else Path.home().joinpath(".cache", "tvnotipy")
-        )
         title = url.split("/")[-1]
         cache_file = os.path.join(cache_dir, title)
         if os.path.isfile(cache_file):
