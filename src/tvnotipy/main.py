@@ -28,7 +28,7 @@ def check_new_seasons():
 
         for tr in table_rows:
             if tr.text.startswith("No. of seasons"):
-                cache_file = os.path.join(cache_dir, series["cache_file_name"])
+                cache_file = os.path.join(cache_dir, series["cache_file"])
 
                 num_of_seasons_last = 0
                 if os.path.isfile(cache_file):
