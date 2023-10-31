@@ -32,7 +32,7 @@ dependencies = [
 ]
 
 [project.scripts]
-tvnotipy = "tvnotipy:main"
+tvnotipy = "tvnotipy.main:main"
 
 [project.urls]
 Documentation = "https://github.com/laszloszurok/tvnotipy#readme"
