@@ -8,8 +8,9 @@ from datetime import datetime
 import dbus
 import schedule
 
+from tvnotipy import timezone
 from tvnotipy.config import getters
-from tvnotipy.config.constants import Config
+from tvnotipy.config.constants import EnvPath
 from tvnotipy.utils import helpers
 
 
@@ -18,7 +19,7 @@ def main() -> None:
 
     if len(series_list := getters.get_series_list()) == 0:
         msg = f"""
-        No urls found: {Config.CONFIG_DIR}/urls
+        No urls found: {EnvPath.CONFIG_DIR}/urls
         The file should contain a list of Wikpedia urls for TV series, one per line.
         """
         logging.error(textwrap.dedent(msg))

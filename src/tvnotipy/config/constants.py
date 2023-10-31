@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 
-class Config:
+class EnvPath:
     CACHE_DIR = (
         f"{xdg_cache}/tvnotipy"
         if (xdg_cache := os.getenv("XDG_CACHE_HOME")) and os.path.isabs(xdg_cache)
