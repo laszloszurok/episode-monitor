@@ -3,15 +3,20 @@
 import os
 import time
 from datetime import datetime
+import sys
 
 import config.utils as cu
+from config.constants import Config
 import dbus
 import requests
 import schedule
 from bs4 import BeautifulSoup
 
 cache_dir = cu.get_cache_dir()
-series_list = cu.get_series_list()
+if len(series_list := cu.get_series_list()) == 0:
+    print("No urls found.")
+    print(f"The file {Config.CONFIG_DIR}/urls should contain a list of Wikpedia urls for TV series, one per line.")
+    sys.exit(1)
 
 
 def check_new_seasons():
