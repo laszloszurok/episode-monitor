@@ -3,12 +3,10 @@ import os
 import sys
 import textwrap
 import time
-from datetime import datetime
 
 import dbus
 import schedule
 
-from tvnotipy import timezone
 from tvnotipy.config import getters
 from tvnotipy.config.constants import EnvPath
 from tvnotipy.utils import helpers
@@ -33,7 +31,7 @@ def main() -> None:
         for series in series_list:
             cache_file = series["cache_file"]
             if os.path.isfile(cache_file):
-                if ((datetime.now().timestamp() - os.path.getmtime(cache_file)) / (60 * 60 * 24)) < 2:
+                if helpers.is_modified_lately(cache_file):
                     title = str(cache_file).split("/")[-1]
                     obj = dbus.SessionBus().get_object(
                         "org.freedesktop.Notifications", "/org/freedesktop/Notifications"

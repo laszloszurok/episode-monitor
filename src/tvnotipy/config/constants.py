@@ -16,3 +16,7 @@ class EnvPath:
     )
 
     URLS_FILE = os.path.join(CONFIG_DIR, "urls")
+
+
+class Condition:
+    MAX_NOTIFY_AGE_DAYS = 2

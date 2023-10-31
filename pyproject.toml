@@ -26,6 +26,7 @@ classifiers = [
 ]
 dependencies = [
   "beautifulsoup4",
+  "python-dateutil",
   "dbus-python",
   "requests",
   "schedule",
