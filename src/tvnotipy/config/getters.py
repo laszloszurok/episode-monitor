@@ -1,6 +1,6 @@
 import os
 
-from config.constants import Config
+from .constants import Config
 
 
 def get_cache_dir():

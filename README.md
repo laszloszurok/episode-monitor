@@ -12,8 +12,23 @@
 
 ## Installation
 
+### From PyPI
+
 ```console
 pip install tvnotipy
+```
+use `pipx` to install into a virtual env, if your operating system does not allow systemwide installations:
+```console
+pipx install tvnotipy
+```
+
+### From source
+
+```console
+git clone https://github.com/laszloszurok/tvnotipy
+cd tvnotipy
+python -m build
+pipx install dist/tvnotipy-0.0.1-py3-none-any.whl
 ```
 
 ## License

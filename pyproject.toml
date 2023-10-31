@@ -31,10 +31,13 @@ dependencies = [
   "schedule",
 ]
 
+[project.scripts]
+tvnotipy = "tvnotipy:main"
+
 [project.urls]
-Documentation = "https://github.com/unknown/tvnotipy#readme"
-Issues = "https://github.com/unknown/tvnotipy/issues"
-Source = "https://github.com/unknown/tvnotipy"
+Documentation = "https://github.com/laszloszurok/tvnotipy#readme"
+Issues = "https://github.com/laszloszurok/tvnotipy/issues"
+Source = "https://github.com/laszloszurok/tvnotipy"
 
 [tool.hatch.version]
 path = "src/tvnotipy/__about__.py"
