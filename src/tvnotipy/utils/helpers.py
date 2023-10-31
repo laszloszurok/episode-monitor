@@ -10,7 +10,7 @@ from tvnotipy.config.constants import Condition
 
 def check_new_seasons(series_list: list, cache_dir: Path):
     for series in series_list:
-        req_str: str = requests.get(url=series["url"]).text
+        req_str: str = requests.get(url=series["url"], timeout=10).text
         html = BeautifulSoup(req_str, "html.parser")
         info_table = html.find(name="table", attrs={"class": "infobox vevent"})
         table_rows = info_table.contents[0].contents
