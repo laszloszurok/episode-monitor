@@ -1,6 +1,6 @@
 import os
 
-from .constants import Config
+from tvnotipy.config.constants import Config
 
 
 def get_cache_dir():
