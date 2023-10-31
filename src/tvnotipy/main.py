@@ -1,5 +1,7 @@
+import logging
 import os
 import sys
+import textwrap
 import time
 from datetime import datetime
 
@@ -15,8 +17,11 @@ def main() -> None:
     cache_dir = getters.get_cache_dir()
 
     if len(series_list := getters.get_series_list()) == 0:
-        print("No urls found.")
-        print(f"The file {Config.CONFIG_DIR}/urls should contain a list of Wikpedia urls for TV series, one per line.")
+        msg = f"""
+        No urls found: {Config.CONFIG_DIR}/urls
+        The file should contain a list of Wikpedia urls for TV series, one per line.
+        """
+        logging.error(textwrap.dedent(msg))
         sys.exit(1)
 
     schedule.every().day.do(helpers.check_new_seasons, series_list, cache_dir)
