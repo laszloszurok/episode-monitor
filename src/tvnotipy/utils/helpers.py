@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 from pathlib import Path
 
+import dbus
 import requests
 from bs4 import BeautifulSoup
 from tvnotipy import timezone
@@ -34,3 +35,9 @@ def check_new_seasons(series_list: list, cache_dir: Path):
 def is_modified_lately(file) -> bool:
     """Return true if the argument file was modified less than MAX_NOTIFY_AGE_DAYS days ago."""
     return (datetime.now(tz=timezone).timestamp() - os.path.getmtime(file)) / 86400 < Condition.MAX_NOTIFY_AGE_DAYS
+
+
+def send_desktop_notification(title: str, message: str):
+    obj = dbus.SessionBus().get_object("org.freedesktop.Notifications", "/org/freedesktop/Notifications")
+    interface = dbus.Interface(obj, "org.freedesktop.Notifications")
+    interface.Notify("", 0, "", f"{title}", f"{message}", [], {"urgency": 1}, 10000)

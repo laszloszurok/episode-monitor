@@ -4,7 +4,6 @@ import sys
 import textwrap
 import time
 
-import dbus
 import schedule
 
 from tvnotipy.config import getters
@@ -32,11 +31,6 @@ def main() -> None:
             cache_file = series["cache_file"]
             if os.path.isfile(cache_file):
                 if helpers.is_modified_lately(cache_file):
-                    title = str(cache_file).split("/")[-1]
-                    obj = dbus.SessionBus().get_object(
-                        "org.freedesktop.Notifications", "/org/freedesktop/Notifications"
-                    )
-                    interface = dbus.Interface(obj, "org.freedesktop.Notifications")
-                    interface.Notify("", 0, "", "New season", f"{title}", [], {"urgency": 1}, 10000)
+                    helpers.send_desktop_notification(title="New season", message=str(cache_file).split("/")[-1])
 
         time.sleep(7200)
