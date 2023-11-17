@@ -1,15 +1,12 @@
 import os
-from datetime import datetime
 from pathlib import Path
 
 import dbus
 import requests
 from bs4 import BeautifulSoup
-from tvnotipy import timezone
-from tvnotipy.config.constants import Condition
 
 
-def check_new_seasons(series_list: list, cache_dir: Path):
+def new_season_notify(series_list: list, cache_dir: str | Path):
     for series in series_list:
         req_str: str = requests.get(url=series["url"], timeout=10).text
         html = BeautifulSoup(req_str, "html.parser")
@@ -30,11 +27,7 @@ def check_new_seasons(series_list: list, cache_dir: Path):
                 if int(num_of_seasons_current) > int(num_of_seasons_last):
                     with open(cache_file, "w") as file:
                         file.writelines(num_of_seasons_current)
-
-
-def is_modified_lately(file) -> bool:
-    """Return true if the argument file was modified less than MAX_NOTIFY_AGE_DAYS days ago."""
-    return (datetime.now(tz=timezone).timestamp() - os.path.getmtime(file)) / 86400 < Condition.MAX_NOTIFY_AGE_DAYS
+                    send_desktop_notification(title="New season", message=str(cache_file).split("/")[-1])
 
 
 def send_desktop_notification(title: str, message: str):
