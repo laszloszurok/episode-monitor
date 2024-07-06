@@ -10,7 +10,7 @@ def new_season_notify(series_list: list, cache_dir: str | Path):
     for series in series_list:
         req_str: str = requests.get(url=series["url"], timeout=10).text
         html = BeautifulSoup(req_str, "html.parser")
-        info_table = html.find(name="table", attrs={"class": "infobox vevent"})
+        info_table = html.find(name="table", attrs={"class": "infobox ib-tv vevent"})
         table_rows = info_table.contents[0].contents
 
         for tr in table_rows:
