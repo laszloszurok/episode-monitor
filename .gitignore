@@ -1,3 +1,10 @@
+# Python-generated files
 __pycache__/
+*.py[oc]
+build/
 dist/
-pyrightconfig.json
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
