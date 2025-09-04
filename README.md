@@ -1,5 +1,7 @@
 # episode-monitor
 
+Send desktop notifications when new episodes are detected for a list ov tv shows.
+
 ## Installation
 
 ### From PyPI
@@ -28,7 +30,7 @@ shows:
 - Family Guy
 - South Park
 ```
-Without any parameters the script will run continously and poll the configured pages evry `interval` minutes.
+Without any parameters the script will run continously and poll the configured pages evry `interval` seconds.
 
 ```console
 episode-monitor
