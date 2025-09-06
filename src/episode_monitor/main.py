@@ -1,15 +1,16 @@
-import requests
-import time
-import re
-import json
-import yaml
-import os
 import argparse
-import notify2
+import json
+import os
+import re
 import signal
 import sys
+import time
 from datetime import datetime
 from pathlib import Path
+
+import notify2
+import requests
+import yaml
 
 
 def get_xdg_path(env_var, default_subdir, filename):
@@ -51,7 +52,7 @@ def load_config():
     else:
         default_data = {
             "interval": 300,
-            "shows": ["The Simpsons", "Family Guy", "South Park"]
+            "shows": ["The Simpsons", "Family Guy", "South Park"],
         }
         with open(CONFIG_FILE, "w", encoding="utf-8") as f:
             yaml.safe_dump(default_data, f)
@@ -90,9 +91,13 @@ def get_num_episodes_api(title):
         "format": "json",
     }
 
-    response = requests.get(URL, params=PARAMS, headers={
-        "User-Agent": "Mozilla/5.0 (compatible; EpisodeMonitor/1.0; +https://example.com)"
-    })
+    response = requests.get(
+        URL,
+        params=PARAMS,
+        headers={
+            "User-Agent": "Mozilla/5.0 (compatible; EpisodeMonitor/1.0; +https://example.com)"
+        },
+    )
     response.raise_for_status()
     data = response.json()
 
@@ -102,8 +107,12 @@ def get_num_episodes_api(title):
     wikitext = page["revisions"][0]["slots"]["main"]["*"]
 
     # Look for num_episodes field inside the infobox
-    match_line = re.search(r"\|\s*num_episodes\s*=(.*)", wikitext) # locate the line containing num_episodes = ...
-    match_num = re.search(r"(\d+)", match_line.group(1)) if match_line else None # match for a number in the line containing num_episodes = ...
+    match_line = re.search(
+        r"\|\s*num_episodes\s*=(.*)", wikitext
+    )  # locate the line containing num_episodes = ...
+    match_num = (
+        re.search(r"(\d+)", match_line.group(1)) if match_line else None
+    )  # match for a number in the line containing num_episodes = ...
     return int(match_num.group(1)) if match_num else None
 
 
@@ -115,11 +124,11 @@ def check_shows(last_counts):
         count = get_num_episodes_api(title)
         if count is not None:
             if title not in last_counts:
-                msg=f"Initial number of episodes: {count}"
+                msg = f"Initial number of episodes: {count}"
                 log_message(f"[{title}] {msg}")
                 send_notification(f"{title}", msg)
             elif count > last_counts[title]:
-                msg=f"New episode detected! Count increased from {last_counts[title]} to {count}"
+                msg = f"New episode detected! Count increased from {last_counts[title]} to {count}"
                 log_message(f"[{title}] {msg}")
                 send_notification(f"{title}", msg)
             elif count < last_counts[title]:
@@ -146,7 +155,9 @@ def monitor_tv_shows(run_once=False):
     last_counts = load_state()
     shows, interval = load_config()
 
-    log_message(f"Monitoring {len(shows)} shows (interval {interval}s, once={run_once})...")
+    log_message(
+        f"Monitoring {len(shows)} shows (interval {interval}s, once={run_once})..."
+    )
 
     if run_once:
         check_shows(last_counts)
@@ -161,9 +172,7 @@ def monitor_tv_shows(run_once=False):
 
 def main():
     print(
-        f"Config file: {CONFIG_FILE}\n"
-        f"State file: {STATE_FILE}\n"
-        f"Log file: {LOG_FILE}\n"
+        f"Config file: {CONFIG_FILE}\nState file: {STATE_FILE}\nLog file: {LOG_FILE}\n"
     )
     parser = argparse.ArgumentParser(description="Wikipedia TV Show Episode Monitor")
     parser.add_argument("--once", action="store_true", help="Run one check and exit")
