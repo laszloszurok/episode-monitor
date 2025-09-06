@@ -6,6 +6,8 @@ import yaml
 import os
 import argparse
 import notify2
+import signal
+import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -133,6 +135,12 @@ def check_shows(last_counts):
     return interval
 
 
+def handle_sigint(signum, frame):
+    """Handle Ctrl-C (SIGINT) gracefully."""
+    log_message("Received SIGINT, exiting gracefully...")
+    sys.exit(0)
+
+
 def monitor_tv_shows(run_once=False):
     """Main monitoring loop or single run based on flag."""
     last_counts = load_state()
@@ -160,4 +168,8 @@ def main():
     parser = argparse.ArgumentParser(description="Wikipedia TV Show Episode Monitor")
     parser.add_argument("--once", action="store_true", help="Run one check and exit")
     args = parser.parse_args()
+
+    # Register SIGINT handler
+    signal.signal(signal.SIGINT, handle_sigint)
+
     monitor_tv_shows(run_once=args.once)
