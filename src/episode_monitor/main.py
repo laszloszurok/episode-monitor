@@ -70,10 +70,14 @@ def log_message(message):
 
 def send_notification(title, message):
     """Send a desktop notification."""
-    notify2.init("Episode Monitor")
-    n = notify2.Notification(title, message, "dialog-information")
-    n.set_urgency(notify2.URGENCY_NORMAL)
-    n.show()
+    try:
+        notify2.init("Episode Monitor")
+        n = notify2.Notification(title, message, "dialog-information")
+        n.set_urgency(notify2.URGENCY_NORMAL)
+        n.show()
+    except Exception:
+        log_message("Failed to send desktop notification")
+    log_message(f"[{title}] {message}")
 
 
 def get_num_episodes_api(title):
@@ -125,15 +129,12 @@ def check_shows(last_counts):
         if count is not None:
             if title not in last_counts:
                 msg = f"Initial number of episodes: {count}"
-                log_message(f"[{title}] {msg}")
                 send_notification(f"{title}", msg)
             elif count > last_counts[title]:
                 msg = f"New episode detected! Count increased from {last_counts[title]} to {count}"
-                log_message(f"[{title}] {msg}")
                 send_notification(f"{title}", msg)
             elif count < last_counts[title]:
                 msg = f"Episode count decreased from {last_counts[title]} to {count} (possible Wikipedia edit)."
-                log_message(f"[{title}] {msg}")
                 send_notification(f"{title}", msg)
 
             last_counts[title] = count
