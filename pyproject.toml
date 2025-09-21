@@ -1,6 +1,6 @@
 [project]
 name = "episode-monitor"
-version = "1.1.0"
+version = "1.1.1"
 description = "Monitor wikipedia pages of tv shows and send a notification when new episodes are detected"
 readme = "README.md"
 requires-python = ">=3.13"

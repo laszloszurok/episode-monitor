@@ -50,7 +50,7 @@ sdist = { url = "https://files.pythonhosted.org/packages/ff/24/63118050c7dd7be04
 
 [[package]]
 name = "episode-monitor"
-version = "1.1.0"
+version = "1.1.1"
 source = { editable = "." }
 dependencies = [
     { name = "dbus-python" },
