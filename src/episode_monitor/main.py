@@ -8,7 +8,6 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-import notify2
 import requests
 import yaml
 
@@ -47,16 +46,18 @@ def load_config():
         with open(CONFIG_FILE, "r", encoding="utf-8") as f:
             data = yaml.safe_load(f)
             shows = data.get("shows", [])
-            interval = data.get("interval", 300)  # default 5 minutes
-            return shows, interval
+            interval = data.get("interval", 300) # default 5 minutes
+            ntfy_url = data.get("ntfy_url", "")
+            return shows, interval, ntfy_url
     else:
         default_data = {
             "interval": 300,
             "shows": ["The Simpsons", "Family Guy", "South Park"],
+            "ntfy_url": "",
         }
         with open(CONFIG_FILE, "w", encoding="utf-8") as f:
             yaml.safe_dump(default_data, f)
-        return default_data["shows"], default_data["interval"]
+        return default_data["shows"], default_data["interval"], default_data["ntfy_url"]
 
 
 def log_message(message):
@@ -68,15 +69,16 @@ def log_message(message):
         f.write(entry + "\n")
 
 
-def send_notification(title, message):
-    """Send a desktop notification."""
+def send_notification(title, message, ntfy_url):
+    """Send a notification to an ntfy topic."""
     try:
-        notify2.init("Episode Monitor")
-        n = notify2.Notification(title, message, "dialog-information")
-        n.set_urgency(notify2.URGENCY_NORMAL)
-        n.show()
+        requests.post(ntfy_url,
+            data=message.encode(encoding='utf-8'),
+            headers={
+                "Title": title,
+            })
     except Exception:
-        log_message("Failed to send desktop notification")
+        log_message("Failed to send ntfy notification")
     log_message(f"[{title}] {message}")
 
 
@@ -122,20 +124,20 @@ def get_num_episodes_api(title):
 
 def check_shows(last_counts):
     """Perform a single check of all shows, update state, log changes."""
-    shows, interval = load_config()
+    shows, interval, ntfy_url = load_config()
 
     for title in shows:
         count = get_num_episodes_api(title)
         if count is not None:
             if title not in last_counts:
                 msg = f"Initial number of episodes: {count}"
-                send_notification(f"{title}", msg)
+                send_notification(title, msg, ntfy_url)
             elif count > last_counts[title]:
                 msg = f"New episode detected! Count increased from {last_counts[title]} to {count}"
-                send_notification(f"{title}", msg)
+                send_notification(title, msg, ntfy_url)
             elif count < last_counts[title]:
                 msg = f"Episode count decreased from {last_counts[title]} to {count} (possible Wikipedia edit)."
-                send_notification(f"{title}", msg)
+                send_notification(title, msg, ntfy_url)
 
             last_counts[title] = count
         else:
@@ -154,7 +156,7 @@ def handle_sigint(signum, frame):
 def monitor_tv_shows(run_once=False):
     """Main monitoring loop or single run based on flag."""
     last_counts = load_state()
-    shows, interval = load_config()
+    shows, interval, _ = load_config()
 
     log_message(
         f"Monitoring {len(shows)} shows (interval {interval}s, once={run_once})..."

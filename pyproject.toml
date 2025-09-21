@@ -5,8 +5,6 @@ description = "Monitor wikipedia pages of tv shows and send a notification when 
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "dbus-python>=1.4.0",
-    "notify2>=0.3.1",
     "pyyaml>=6.0.2",
     "requests>=2.32.5",
 ]
