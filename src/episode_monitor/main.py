@@ -77,8 +77,8 @@ def send_notification(title, message, ntfy_url):
             headers={
                 "Title": title,
             })
-    except Exception:
-        log_message("Failed to send ntfy notification")
+    except Exception as e:
+        log_message(f"Failed to send ntfy notification, {e}")
     log_message(f"[{title}] {message}")
 
 
