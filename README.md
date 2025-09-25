@@ -1,6 +1,6 @@
 # episode-monitor
 
-Send desktop notifications when new episodes are detected for a list ov tv shows.
+Send notifications to an [ntfy](https://github.com/binwiederhier/ntfy) topic, when new episodes are detected for a list ov tv shows.
 
 ## Installation
 
@@ -24,6 +24,7 @@ pipx install dist/episode-monitor-0.0.1-py3-none-any.whl
 Frist run creates a config file on `$XDG_CONFIG_HOME/episode_monitor/config.yaml` (defaults to `~/.config/episode_monitor/config.yaml`).
 The default config file:
 ```yaml
+ntfy_url: ""
 interval: 300
 shows:
 - The Simpsons
