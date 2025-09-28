@@ -2,7 +2,9 @@ import argparse
 import json
 import os
 import re
+import secrets
 import signal
+import string
 import sys
 import time
 from datetime import datetime
@@ -50,10 +52,11 @@ def load_config():
             ntfy_url = data.get("ntfy_url", "")
             return shows, interval, ntfy_url
     else:
+        ntfy_topic = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(32))
         default_data = {
             "interval": 300,
             "shows": ["The Simpsons", "Family Guy", "South Park"],
-            "ntfy_url": "",
+            "ntfy_url": f"https://ntfy.sh/{ntfy_topic}",
         }
         with open(CONFIG_FILE, "w", encoding="utf-8") as f:
             yaml.safe_dump(default_data, f)
