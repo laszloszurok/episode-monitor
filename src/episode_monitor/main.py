@@ -22,10 +22,39 @@ def get_xdg_path(env_var, default_subdir, filename):
     return path / filename
 
 
+def get_system_path(dirname, filename):
+    dirname = Path(dirname)
+    dirname.mkdir(parents=True, exist_ok=True)
+    return dirname / filename
+
+
+parser = argparse.ArgumentParser(description="Wikipedia TV Show Episode Monitor")
+parser.add_argument("--once", action="store_true", help="Run one check and exit")
+parser.add_argument(
+    "--mode",
+    nargs=1,
+    type=str,
+    help="Run in user or system mode (default is user)",
+    default="user",
+)
+args = parser.parse_args()
+
 # Paths following XDG spec
-STATE_FILE = get_xdg_path("XDG_STATE_HOME", ".local/state", "episode_counts.json")
-CONFIG_FILE = get_xdg_path("XDG_CONFIG_HOME", ".config", "config.yaml")
-LOG_FILE = get_xdg_path("XDG_CACHE_HOME", ".cache", "episode_log.txt")
+STATE_FILE = (
+    get_xdg_path("XDG_STATE_HOME", ".local/state", "episode_counts.json")
+    if args.mode == "user"
+    else get_system_path("/var/lib/episode_monitor", "episode_counts.json")
+)
+CONFIG_FILE = (
+    get_xdg_path("XDG_CONFIG_HOME", ".config", "config.yaml")
+    if args.mode == "user"
+    else get_system_path("/etc/episode_monitor", "config.yaml")
+)
+LOG_FILE = (
+    get_xdg_path("XDG_CACHE_HOME", ".cache", "episode_monitor.log")
+    if args.mode == "user"
+    else get_system_path("/var/log/episode_monitor", "episode_monitor.log")
+)
 
 
 def load_state():
@@ -48,11 +77,13 @@ def load_config():
         with open(CONFIG_FILE, "r", encoding="utf-8") as f:
             data = yaml.safe_load(f)
             shows = data.get("shows", [])
-            interval = data.get("interval", 300) # default 5 minutes
+            interval = data.get("interval", 300)  # default 5 minutes
             ntfy_url = data.get("ntfy_url", "")
             return shows, interval, ntfy_url
     else:
-        ntfy_topic = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(32))
+        ntfy_topic = "".join(
+            secrets.choice(string.ascii_letters + string.digits) for _ in range(32)
+        )
         default_data = {
             "interval": 300,
             "shows": ["The Simpsons", "Family Guy", "South Park"],
@@ -75,11 +106,13 @@ def log_message(message):
 def send_notification(title, message, ntfy_url):
     """Send a notification to an ntfy topic."""
     try:
-        requests.post(ntfy_url,
-            data=message.encode(encoding='utf-8'),
+        requests.post(
+            ntfy_url,
+            data=message.encode(encoding="utf-8"),
             headers={
                 "Title": title,
-            })
+            },
+        )
     except Exception as e:
         log_message(f"Failed to send ntfy notification, {e}")
     log_message(f"[{title}] {message}")
@@ -180,9 +213,6 @@ def main():
     print(
         f"Config file: {CONFIG_FILE}\nState file: {STATE_FILE}\nLog file: {LOG_FILE}\n"
     )
-    parser = argparse.ArgumentParser(description="Wikipedia TV Show Episode Monitor")
-    parser.add_argument("--once", action="store_true", help="Run one check and exit")
-    args = parser.parse_args()
 
     # Register SIGINT handler
     signal.signal(signal.SIGINT, handle_sigint)
